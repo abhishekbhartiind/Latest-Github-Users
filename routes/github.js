@@ -7,14 +7,15 @@ const axios = require('axios');
 
 const instance = axios.create({
     baseURL: constants.apiBaseUrl
-  });
+});
 
 // @route GET github/totalusers
 // @desc Returns total number of github users
 // @access Public
 router.get('/totalusers',(req,res) => {
     try {
-        if(!fs.existsSync('cache/totalusers.json') || (Date.now() - Math.floor(fs.statSync('cache/totalusers.json').birthtimeMs)) >= constants.cacheInterval) {  
+        if(!fs.existsSync('cache/totalusers.json') || 
+        (Date.now() - Math.floor(fs.statSync('cache/totalusers.json').birthtimeMs)) >= constants.cacheInterval) {  
             instance.get('/search/users',{
                 params: {
                   q: 'type:user'
@@ -23,7 +24,7 @@ router.get('/totalusers',(req,res) => {
                 try {
                     fs.writeFileSync('cache/totalusers.json',JSON.stringify({totalUsers: response.data.total_count}))
                     } catch(err) {
-    
+                        console.log(err)
                     }
                 res.send({totalUsers: response.data.total_count})
             }).catch((err)=>{
@@ -59,7 +60,7 @@ router.get('/newusers',(req,res) => {
                         try {
                             fs.writeFileSync('cache/newusers.json',JSON.stringify(response.data))
                             } catch(err) {
-            
+                                console.log(err)
                             }
                         res.send(response.data)
                     }).catch((err)=>{
