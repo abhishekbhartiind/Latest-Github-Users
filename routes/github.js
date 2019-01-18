@@ -3,6 +3,7 @@ const router = express.Router();
 const constants = require('../config/constants');
 const fs = require('fs');
 const axios = require('axios');
+const _ = require('lodash');
 
 
 const instance = axios.create({
@@ -47,9 +48,7 @@ router.get('/totalusers',(req,res) => {
 router.get('/newusers',(req,res) => {
 
         axios.get(constants.apiHost+"github/totalusers").then((response)=>{
-
             try {
-
                 if(!fs.existsSync('cache/newusers.json') || (Date.now() - Math.floor(fs.statSync('cache/newusers.json').birthtimeMs)) >= constants.cacheInterval) {  
                     instance.get('/users',{
                         params: {
@@ -58,11 +57,12 @@ router.get('/newusers',(req,res) => {
                         }
                     }).then((response)=>{
                         try {
-                            fs.writeFileSync('cache/newusers.json',JSON.stringify(response.data))
+                            fs.writeFileSync('cache/newusers.json',
+                                JSON.stringify(_.reverse(response.data)))
                             } catch(err) {
                                 console.log(err)
                             }
-                        res.send(response.data)
+                        res.send(_.reverse(response.data))
                     }).catch((err)=>{
                         console.log(err)
                         res.status(403).json({error:'Something went wrong'})
