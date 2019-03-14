@@ -1,8 +1,8 @@
-Project of Guest Touch
+Webapp to show latest 100 github users
 
 Tools used
 ===============
-Frontend: React
+Frontend: ReactJS
 Backend: NodeJS
 -------------------
 
